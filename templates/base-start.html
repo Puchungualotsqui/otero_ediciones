@@ -1,0 +1,59 @@
+{{define "base-start" -}}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Title}}</title>
+  <meta name="description" content="{{.Description}}">
+  <link rel="icon" type="image/x-icon" href="/assets/icon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('synopsisLoader', () => ({
+        text: '',
+        loading: true,
+        failed: false,
+        async load(url) {
+          try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Synopsis request failed: ${response.status}`);
+            this.text = await response.text();
+            if (!this.text.trim()) this.failed = true;
+          } catch (error) {
+            this.failed = true;
+            console.warn('Could not load synopsis', error);
+          } finally {
+            this.loading = false;
+          }
+        }
+      }));
+    });
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="min-h-screen bg-white font-sans text-slate-800 antialiased" x-data>
+<header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+  <div class="mx-auto flex max-w-[1500px] flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:gap-6">
+    <a href="/" class="shrink-0" aria-label="Otero Ediciones">
+      <img src="/assets/LogoOteroEdiciones.jpg" width="109" height="50" alt="Otero Ediciones" class="h-[50px] w-auto object-contain">
+    </a>
+    <form action="/catalogo" method="get" class="flex h-10 min-w-0 flex-1 overflow-hidden rounded-full border border-slate-300 bg-slate-50 focus-within:border-brand focus-within:ring-2 focus-within:ring-red-100">
+      <label for="header-search" class="sr-only">Buscar</label>
+      <input id="header-search" name="busqueda" value="{{.Query.Get "busqueda"}}" placeholder="Buscar por título o autor..." class="min-w-0 flex-1 bg-transparent px-4 text-sm outline-none placeholder:text-slate-400">
+      <button type="submit" class="flex w-14 items-center justify-center bg-slate-200 transition hover:bg-slate-300" aria-label="Buscar">
+        <img src="/assets/search_icon.svg" alt="" class="h-5 w-5">
+      </button>
+    </form>
+    <nav class="flex items-center justify-center gap-5 text-sm font-semibold lg:justify-end">
+      <a href="/catalogo" class="transition hover:text-brand {{if eq .Path "/catalogo"}}text-brand{{end}}">Catálogo</a>
+      <a href="/historia" class="transition hover:text-brand {{if eq .Path "/historia"}}text-brand{{end}}">Historia</a>
+    </nav>
+  </div>
+</header>
+<main class="mx-auto w-full max-w-[1500px] flex-1">
+{{end}}

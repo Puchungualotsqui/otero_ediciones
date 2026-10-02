@@ -1,0 +1,43 @@
+{{define "book" -}}
+{{template "base-start" .}}
+{{with .Book}}
+<section class="px-4 py-10">
+  <div class="mx-auto flex max-w-5xl flex-col gap-8 md:flex-row md:items-start">
+    <div class="w-full shrink-0 md:sticky md:top-24 md:w-80">
+      <img src="{{coverOriginal .SimplifiedName}}" alt="{{.Titulo}}" class="w-full rounded-lg border border-slate-200 bg-slate-100 shadow-sm">
+    </div>
+    <article class="min-w-0 flex-1">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">{{.Titulo}}</h1>
+      <hr class="my-6 border-slate-200">
+      <dl class="grid gap-3 sm:grid-cols-2">
+        {{with .Autor}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Autor/a</dt><dd>{{.}}</dd></div>{{end}}
+        {{with .Ilustraciones}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ilustraciones</dt><dd>{{.}}</dd></div>{{end}}
+        {{with .Tipo}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tipo de libro</dt><dd>{{label .}}</dd></div>{{end}}
+        {{with .Materia}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Materia</dt><dd>{{label .}}</dd></div>{{end}}
+        {{with .NivelEducativo}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Nivel educativo</dt><dd>{{label .}}</dd></div>{{end}}
+        {{with .Genero}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Género</dt><dd>{{label .}}</dd></div>{{end}}
+        {{with .Idioma}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Idioma</dt><dd>{{label .}}</dd></div>{{end}}
+        {{with .FichaDidactica}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Guía didáctica</dt><dd>{{.}}</dd></div>{{end}}
+        {{with .Tamano}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tamaño</dt><dd>{{.}}</dd></div>{{end}}
+        {{with .Paginas}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Páginas</dt><dd>{{.}}</dd></div>{{end}}
+        {{with .ISBN}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">I.S.B.N.</dt><dd>{{.}}</dd></div>{{end}}
+        {{with .DepositoLegal}}<div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Depósito legal</dt><dd>{{.}}</dd></div>{{end}}
+      </dl>
+      {{if $.SynopsisURL}}
+      <hr class="my-6 border-slate-200">
+      <section x-data="synopsisLoader" x-init="load($el.dataset.synopsisUrl)" data-synopsis-url="{{$.SynopsisURL}}">
+        <h2 class="mb-3 text-2xl font-bold text-slate-900">Sinopsis</h2>
+        <p x-cloak x-show="loading" class="text-sm text-slate-500">Cargando sinopsis...</p>
+        <div x-cloak x-show="text" x-text="text" class="whitespace-pre-wrap text-sm leading-7 text-slate-600"></div>
+        <div x-cloak x-show="failed" class="text-sm leading-7 text-slate-600">
+          No se pudo cargar la sinopsis automáticamente.
+          <a href="{{$.SynopsisURL}}" target="_blank" rel="noreferrer" class="font-semibold text-brand hover:underline">Leer sinopsis</a>
+        </div>
+      </section>
+      {{end}}
+    </article>
+  </div>
+</section>
+{{end}}
+{{template "base-end" .}}
+{{end}}

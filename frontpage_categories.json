@@ -1,0 +1,52 @@
+[
+  {
+    "titulo": "NEW_RELEASES-PRIMARY",
+    "libros": [
+      "el_hogar_de_los_pajaros_y_otros_cuentos_infantiles",
+      "cuentos_de_misterio_para_ninos_y_detectives",
+      "asi_era_la_vida",
+      "thats_just_how_life_is",
+      "a_fantastic_tale_and_other_stories"
+    ]
+  },
+  {
+    "titulo": "NEW_RELEASES-SECONDARY",
+    "libros": [
+      "los_hilos_que_nunca_vimos",
+      "el_sindrome_de_heraclito",
+      "xq",
+      "how_not_to_make_friends_and_other_lessons_i_didnt_ask_for",
+      "the_heraclitus_syndrome"
+    ]
+  },
+  {
+    "titulo": "NOVELAS",
+    "libros": [
+      "ellos_no_saben_que",
+      "lo_bonito_de_ser_feos",
+      "los_acertijos_de_glenda",
+      "cyberbullying",
+      "ese_hombre_que_no_era_yo"
+    ]
+  },
+  {
+    "titulo": "CUENTOS",
+    "libros": [
+      "cuentos_tristes_para_una_noche_rota",
+      "el_hombre_que_golpeaba_con_la_mandibula",
+      "la_tregua_incomoda",
+      "dias_contados",
+      "cuarentena"
+    ]
+  },
+  {
+    "titulo": "EDUCATIONAL_TEXTS",
+    "libros": [
+      "lenguaje_y_comunicacion-1-primaria",
+      "educacion_fisica_deportes_y_recreacion-2-secundaria",
+      "artes_plasticas_y_visuales-3-primaria",
+      "cosmovisiones_filosofia_y_psicologia-4-secundaria",
+      "mi_libro_de_valores-5-primaria"
+    ]
+  }
+]

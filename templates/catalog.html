@@ -1,0 +1,67 @@
+{{define "catalog" -}}
+{{template "base-start" .}}
+<section class="px-4 py-8">
+  <div class="mx-auto flex max-w-[1300px] flex-col gap-8 lg:flex-row lg:items-start">
+    <aside class="w-full shrink-0 lg:sticky lg:top-24 lg:w-72">
+      <form id="catalog-filters" action="/catalogo" method="get" hx-get="/catalogo" hx-target="#catalog-grid" hx-swap="innerHTML" hx-push-url="true" class="rounded-2xl bg-slate-50 p-5 shadow-sm ring-1 ring-slate-200">
+        <input type="hidden" name="busqueda" value="{{.Query.Get "busqueda"}}">
+        <div class="mb-5 flex items-center justify-between">
+          <h1 class="text-lg font-bold text-slate-900">Catálogo</h1>
+          <span class="htmx-indicator text-xs text-slate-500">Actualizando...</span>
+        </div>
+        {{template "filter-group" dict "key" "nivel" "title" "Nivel educativo" "options" (slice "INICIAL" "PRIMARIA" "SECUNDARIA") "query" .Query}}
+        {{template "filter-group" dict "key" "materia" "title" "Materia" "options" (slice "EDUCACION_FISICA" "LITERATURA" "PSICOLOGIA" "ARTES_PLASTICAS" "MUSICA" "VALORES") "query" .Query}}
+        {{template "filter-group" dict "key" "tipo" "title" "Tipo de libro" "options" (slice "OBRA_LITERARIA" "TEXTO_EDUCATIVO") "query" .Query}}
+        {{template "filter-group" dict "key" "idioma" "title" "Idioma" "options" (slice "ESPANOL" "INGLES") "query" .Query}}
+        <button type="submit" class="mt-3 w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-red-200">Aplicar filtros</button>
+      </form>
+    </aside>
+    <div class="min-w-0 flex-1">
+      <div id="catalog-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {{template "catalog-cards" .}}
+      </div>
+      <div id="catalog-more" class="mt-8 flex justify-center">
+        {{template "catalog-more-button" .}}
+      </div>
+    </div>
+  </div>
+</section>
+{{template "base-end" .}}
+{{end}}
+
+{{define "catalog-fragment" -}}
+{{template "catalog-cards" .}}
+<div id="catalog-more" hx-swap-oob="outerHTML" class="mt-8 flex justify-center">
+  {{template "catalog-more-button" .}}
+</div>
+{{end}}
+
+{{define "catalog-cards" -}}
+{{range .Catalog.Books}}
+{{template "book-card" .}}
+{{else}}
+<div class="col-span-full rounded-2xl border border-dashed border-slate-300 px-6 py-12 text-center text-slate-500">No encontramos libros con esos criterios.</div>
+{{end}}
+{{end}}
+
+{{define "catalog-more-button" -}}
+{{if .Catalog.HasMore}}
+<button type="button" hx-get="/catalogo?{{queryString .Query .Catalog.NextStartIndex}}" hx-target="#catalog-grid" hx-swap="beforeend" class="rounded-lg border border-brand px-5 py-2.5 text-sm font-semibold text-brand transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-100">Cargar más</button>
+{{end}}
+{{end}}
+
+{{define "filter-group" -}}
+<div x-data="{open: true}" class="mb-5">
+  <button type="button" @click="open = !open" class="flex w-full items-center justify-between border-b border-slate-200 pb-2 text-left font-semibold text-slate-800">
+    <span>{{.title}}</span><span class="text-lg leading-none text-slate-500" x-text="open ? '−' : '+'"></span>
+  </button>
+  <div x-show="open" class="space-y-2 pt-3">
+    {{range .options}}
+    <label class="flex cursor-pointer items-center justify-between gap-3 rounded-md px-1 py-1 text-sm hover:bg-white">
+      <span>{{label .}}</span>
+      <input type="checkbox" name="{{$.key}}" value="{{.}}" {{if selected $.query $.key .}}checked{{end}} class="h-4 w-4 rounded border-slate-300 text-brand focus:ring-brand">
+    </label>
+    {{end}}
+  </div>
+</div>
+{{end}}

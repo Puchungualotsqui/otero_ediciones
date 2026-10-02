@@ -1,0 +1,33 @@
+{{define "home" -}}
+{{template "base-start" .}}
+<section class="px-4 py-4 sm:py-6">
+  <div class="mx-auto aspect-[330/103] max-w-[1500px] overflow-hidden rounded-2xl bg-slate-100 shadow-sm">
+    <video autoplay muted loop playsinline class="hidden h-full w-full object-cover sm:block" aria-label="Otero Ediciones">
+      <source src="/assets/HomeVideo-desktop.mp4" type="video/mp4">
+    </video>
+    <video autoplay muted loop playsinline class="h-full w-full object-cover sm:hidden" aria-label="Otero Ediciones">
+      <source src="/assets/HomeVideo-phone.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="mx-auto mt-8 flex max-w-[1500px] flex-col gap-10">
+    {{range .HomeRows}}
+    <section>
+      <h2 class="mb-5 text-center text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{{label .Titulo}}</h2>
+      <div class="flex flex-wrap justify-center gap-4">
+        {{range .Books}}
+        {{template "book-card" .}}
+        {{end}}
+      </div>
+    </section>
+    {{end}}
+  </div>
+</section>
+{{template "base-end" .}}
+{{end}}
+
+{{define "book-card" -}}
+<a href="/catalogo/{{.SimplifiedName}}" class="group flex w-[min(100%,250px)] flex-col items-center rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand">
+  <img src="{{coverSmall .SimplifiedName}}" loading="lazy" decoding="async" alt="{{.Titulo}}" class="h-[330px] w-[220px] object-cover bg-slate-100">
+  <h3 class="flex min-h-16 items-center text-center text-base font-medium leading-snug group-hover:text-brand">{{.Titulo}}</h3>
+</a>
+{{end}}

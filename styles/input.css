@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@source "../templates";
+
+@theme {
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --color-brand: #e10916;
+  --color-brand-dark: #b60707;
+}
+
+[x-cloak] {
+  display: none !important;
+}
