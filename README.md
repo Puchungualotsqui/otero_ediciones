@@ -50,7 +50,7 @@ Book covers remain on S3 and are lazy-loaded by the browser. Covers are media as
 
 ## Styling note
 
-Tailwind is compiled locally with the Tailwind CLI v4. The source is `styles/input.css`, which scans the Go templates, and the generated `static/assets/app.css` is embedded and served by the Go application. There is no Tailwind CDN runtime dependency in production.
+Tailwind is compiled locally with the Tailwind CLI v4. The source is `styles/input.css`, which scans the Go templates, and the generated `static/assets/app.css` is embedded and served by the Go application. Montserrat is served locally as WOFF2 from `static/assets/fonts`, so the page does not depend on Google Fonts. There is no Tailwind CDN runtime dependency in production.
 
 ## VPS deployment
 

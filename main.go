@@ -164,7 +164,21 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.FS(static))))
+	assetHandler := http.StripPrefix("/assets/", http.FileServer(http.FS(static)))
+	mux.Handle("/assets/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cacheControl := "public, max-age=604800"
+		if strings.HasSuffix(r.URL.Path, ".mp4") || strings.HasSuffix(r.URL.Path, ".jpg") ||
+			strings.HasSuffix(r.URL.Path, ".png") || strings.HasSuffix(r.URL.Path, ".svg") ||
+			strings.HasSuffix(r.URL.Path, ".woff") || strings.HasSuffix(r.URL.Path, ".woff2") ||
+			strings.HasSuffix(r.URL.Path, ".ttf") {
+			cacheControl = "public, max-age=2592000"
+		}
+		if strings.HasSuffix(r.URL.Path, "/app.css") {
+			cacheControl = "public, max-age=86400"
+		}
+		w.Header().Set("Cache-Control", cacheControl)
+		assetHandler.ServeHTTP(w, r)
+	}))
 	mux.HandleFunc("/healthz", healthHandler)
 	mux.HandleFunc("/", store.homeHandler(templates))
 	mux.HandleFunc("/catalogo", store.catalogHandler(templates))
