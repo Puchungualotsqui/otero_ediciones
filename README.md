@@ -64,4 +64,10 @@ To build and deploy an update from this directory:
 
 The script runs tests, rebuilds Tailwind, cross-compiles the Linux binary, uploads it over SSH, atomically installs it, restarts the systemd service, and checks `/healthz`. Override the defaults when needed with `OTERO_DEPLOY_TARGET`, `OTERO_REMOTE_DIR`, or `OTERO_SERVICE`.
 
+## License
+
+This unified application is licensed under the GNU General Public License, version 2.0. See [`LICENSE`](LICENSE).
+
+The included Otero Ediciones branding, catalog content, synopsis text, and external book-cover media may have separate rights and should not be assumed to be covered by the software license unless explicitly authorized.
+
 The original `frontend` and `backend` directories are intentionally left unchanged; this directory is the migration target.
