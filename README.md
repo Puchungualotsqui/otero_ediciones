@@ -19,6 +19,11 @@ From this directory:
 
 This rebuilds the production Tailwind stylesheet and starts the Go app. Then open <http://localhost:8080>.
 
+The server accepts these environment variables:
+
+- `OTERO_ADDR` — bind address; defaults to `127.0.0.1:8080`.
+- `OTERO_BASE_URL` — canonical public URL used by the sitemap; defaults to `https://oteroediciones.com`.
+
 To build the production CSS and a self-contained binary:
 
 ```sh
@@ -46,5 +51,9 @@ Book covers remain on S3 and are lazy-loaded by the browser. Covers are media as
 ## Styling note
 
 Tailwind is compiled locally with the Tailwind CLI v4. The source is `styles/input.css`, which scans the Go templates, and the generated `static/app.css` is embedded and served by the Go application. There is no Tailwind CDN runtime dependency in production.
+
+## VPS deployment
+
+Example systemd and Caddy configurations are in `deploy/`. The intended shared-VPS setup is to run this app on `127.0.0.1:8091` and let the existing reverse proxy terminate HTTPS for `oteroediciones.com`. The `/healthz` endpoint can be used by the service monitor or reverse proxy.
 
 The original `frontend` and `backend` directories are intentionally left unchanged; this directory is the migration target.

@@ -1,0 +1,4 @@
+# Add this site block to the existing Caddyfile without removing the other app.
+oteroediciones.com, www.oteroediciones.com {
+    reverse_proxy 127.0.0.1:8091
+}

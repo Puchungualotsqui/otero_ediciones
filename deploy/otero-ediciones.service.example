@@ -1,0 +1,21 @@
+[Unit]
+Description=Otero Ediciones unified web app
+After=network.target
+
+[Service]
+Type=simple
+User=oteroediciones
+Group=oteroediciones
+WorkingDirectory=/opt/oteroediciones
+ExecStart=/opt/oteroediciones/otero-ediciones
+Environment=OTERO_ADDR=127.0.0.1:8091
+Environment=OTERO_BASE_URL=https://oteroediciones.com
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

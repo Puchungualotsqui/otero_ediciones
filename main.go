@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -74,6 +75,7 @@ type Store struct {
 	Books      []Book
 	Categories []Category
 	BySlug     map[string]Book
+	BaseURL    string
 }
 
 var translations = map[string]string{
@@ -102,6 +104,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	store.BaseURL = envOrDefault("OTERO_BASE_URL", "https://oteroediciones.com")
+	addr := envOrDefault("OTERO_ADDR", "127.0.0.1:8080")
 
 	funcs := template.FuncMap{
 		"dict": func(values ...any) (map[string]any, error) {
@@ -161,6 +165,7 @@ func main() {
 		log.Fatal(err)
 	}
 	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.FS(static))))
+	mux.HandleFunc("/healthz", healthHandler)
 	mux.HandleFunc("/", store.homeHandler(templates))
 	mux.HandleFunc("/catalogo", store.catalogHandler(templates))
 	mux.HandleFunc("/catalogo/", store.bookHandler(templates))
@@ -171,12 +176,26 @@ func main() {
 	mux.HandleFunc("/api/catalogo/", store.bookJSONHandler)
 
 	server := &http.Server{
-		Addr:              ":8080",
+		Addr:              addr,
 		Handler:           logging(mux),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
-	log.Printf("Otero Ediciones running at http://localhost%s (%d books)", server.Addr, len(store.Books))
+	log.Printf("Otero Ediciones running at http://%s (%d books)", server.Addr, len(store.Books))
 	log.Fatal(server.ListenAndServe())
+}
+
+func envOrDefault(key, fallback string) string {
+	if value := strings.TrimSpace(os.Getenv(key)); value != "" {
+		return value
+	}
+	return fallback
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "no-store")
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte("ok\n"))
 }
 
 func loadStore() (Store, error) {
@@ -498,7 +517,10 @@ func writeJSON(w http.ResponseWriter, value any) {
 
 func (s Store) sitemapHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-	baseURL := "https://oteroediciones.com"
+	baseURL := strings.TrimRight(s.BaseURL, "/")
+	if baseURL == "" {
+		baseURL = "https://oteroediciones.com"
+	}
 	fmt.Fprint(w, `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
 	for _, path := range []string{"/", "/catalogo", "/historia"} {
 		fmt.Fprintf(w, "<url><loc>%s%s</loc></url>", baseURL, path)
