@@ -50,10 +50,18 @@ Book covers remain on S3 and are lazy-loaded by the browser. Covers are media as
 
 ## Styling note
 
-Tailwind is compiled locally with the Tailwind CLI v4. The source is `styles/input.css`, which scans the Go templates, and the generated `static/app.css` is embedded and served by the Go application. There is no Tailwind CDN runtime dependency in production.
+Tailwind is compiled locally with the Tailwind CLI v4. The source is `styles/input.css`, which scans the Go templates, and the generated `static/assets/app.css` is embedded and served by the Go application. There is no Tailwind CDN runtime dependency in production.
 
 ## VPS deployment
 
 Example systemd and Caddy configurations are in `deploy/`. The intended shared-VPS setup is to run this app on `127.0.0.1:8091` and let the existing reverse proxy terminate HTTPS for `oteroediciones.com`. The `/healthz` endpoint can be used by the service monitor or reverse proxy.
+
+To build and deploy an update from this directory:
+
+```sh
+./update.sh
+```
+
+The script runs tests, rebuilds Tailwind, cross-compiles the Linux binary, uploads it over SSH, atomically installs it, restarts the systemd service, and checks `/healthz`. Override the defaults when needed with `OTERO_DEPLOY_TARGET`, `OTERO_REMOTE_DIR`, or `OTERO_SERVICE`.
 
 The original `frontend` and `backend` directories are intentionally left unchanged; this directory is the migration target.
