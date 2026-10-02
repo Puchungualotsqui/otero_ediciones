@@ -37,8 +37,8 @@ ssh "$REMOTE" "set -eu
   systemctl restart '$SERVICE'
   systemctl is-active --quiet '$SERVICE'
   for attempt in 1 2 3 4 5 6 7 8 9 10; do
-    if curl --fail --silent --show-error http://127.0.0.1:8091/healthz; then
-      printf '\\n'
+    if curl --fail --silent http://127.0.0.1:8091/healthz >/dev/null; then
+      echo "Health check passed on attempt $attempt."
       exit 0
     fi
     sleep 1
