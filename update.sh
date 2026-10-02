@@ -36,7 +36,17 @@ ssh "$REMOTE" "set -eu
   rm -f '$REMOTE_TMP'
   systemctl restart '$SERVICE'
   systemctl is-active --quiet '$SERVICE'
-  curl --fail --silent --show-error http://127.0.0.1:8091/healthz
+  for attempt in 1 2 3 4 5 6 7 8 9 10; do
+    if curl --fail --silent --show-error http://127.0.0.1:8091/healthz; then
+      printf '\\n'
+      exit 0
+    fi
+    sleep 1
+  done
+  echo 'Health check failed after 10 seconds.' >&2
+  systemctl status '$SERVICE' --no-pager || true
+  journalctl -u '$SERVICE' -n 50 --no-pager || true
+  exit 1
 "
 
 echo "==> Deployment completed successfully"
